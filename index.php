@@ -41,7 +41,7 @@ class Router
             $controller->$methodName();
         } else {
             // Gestion des erreurs (page 404, etc.)
-            echo '<h2>la page demandée n\'existe pas</h2>';
+            require_once('views/404.php');
         }
     }
 }
@@ -52,6 +52,7 @@ $router = new Router('R3PHP/TaskManagerMVC');
 // Ajout des routes
 $router->addRoute('', 'HomeController@index'); // Pour la racine
 $router->addRoute('tasks', 'TaskController@index'); // Pour la racine
+$router->addRoute('about','AboutController@index');
 
 // Appel de la méthode route
 $router->route(trim($_SERVER['REQUEST_URI'], '/'));
