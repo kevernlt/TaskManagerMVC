@@ -47,7 +47,7 @@ class Router
 }
 
 // Instanciation du routeur
-$router = new Router('DemoMVCAlpha');
+$router = new Router('R3PHP/TaskManagerMVC');
 
 // Ajout des routes
 $router->addRoute('', 'HomeController@index'); // Pour la racine

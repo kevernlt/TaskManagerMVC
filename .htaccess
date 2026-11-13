@@ -1,3 +1,3 @@
 RewriteEngine On
-RewriteBase /DemoMVCAlpha/
+RewriteBase /R3PHP/TaskManagerMVC/
 RewriteRule ^(.*)$ index.php [QSA,L]
