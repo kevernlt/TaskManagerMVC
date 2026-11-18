@@ -32,17 +32,38 @@ class Router
         $url = trim($url, '/');
 
         // Vérification de la correspondance de l'URL à une route définie
-        if (array_key_exists($url, $this->routes)) {
-            // Extraction du nom du contrôleur et de la méthode
-            list($controllerName, $methodName) = explode('@', $this->routes[$url]);
+        foreach ($this->routes as $route =>$controllerMethod) {
+            //verif des parties de l'URL
+            $routeParts = explode('/',$route);
+            $urlParts = explode('/',$url);
 
-            // Instanciation du contrôleur et appel de la méthode
-            $controller = new $controllerName();
-            $controller->$methodName();
-        } else {
-            // Gestion des erreurs (page 404, etc.)
-            require_once('views/404.php');
-        }
+            if(count($urlParts) == count($routeParts)){
+                $params = [];
+                $isMatch = true;
+                foreach ($routeParts as $index=>$part){
+                    if(preg_match('/^{\w+}$/',$part)){
+                        $params[] = $urlParts[$index];
+                    }elseif($part !== $urlParts[$index]){
+                        $isMatch=false;
+                        break;
+                    }
+                }
+            
+                if($isMatch){
+
+                
+                    // Extraction du nom du contrôleur et de la méthode
+                    list($controllerName, $methodName) = explode('@', $controllerMethod);
+
+                    // Instanciation du contrôleur et appel de la méthode
+                    $controller = new $controllerName();
+                    call_user_func_array([$controller,$methodName],$params);
+                    return;
+                }
+            }
+        } 
+        // Gestion des erreurs (page 404, etc.)
+        require_once('views/404.php');
     }
 }
 
@@ -53,6 +74,7 @@ $router = new Router('R3PHP/TaskManagerMVC');
 $router->addRoute('', 'HomeController@index'); // Pour la racine
 $router->addRoute('tasks', 'TaskController@index'); // Pour la racine
 $router->addRoute('about','AboutController@index');
+$router->addRoute('tasks/{id}','TaskController@perTask');
 
 // Appel de la méthode route
 $router->route(trim($_SERVER['REQUEST_URI'], '/'));
